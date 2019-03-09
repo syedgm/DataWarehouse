@@ -1,14 +1,12 @@
 package com.warehouse.dto;
 
-import java.util.Date;
-
 public class DealDto {
 
 	private String dealId;
 	private String fromCurrency;
 	private String toCurrency;
-	private Date dateTime;
-	private Double amount;
+	private String dateTime;
+	private String amount;
 	
 	
 	public String getDealId() {
@@ -35,19 +33,19 @@ public class DealDto {
 		this.toCurrency = toCurrency;
 	}
 	
-	public Date getDateTime() {
+	public String getDateTime() {
 		return dateTime;
 	}
 
-	public void setDateTime(Date dateTime) {
+	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
 
-	public Double getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
 }

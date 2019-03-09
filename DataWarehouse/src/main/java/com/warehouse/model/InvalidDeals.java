@@ -1,7 +1,5 @@
 package com.warehouse.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,10 +26,10 @@ public class InvalidDeals {
 	private String toCurrency;
 	
 	@Column(name="deal_time")
-	private Date dealTime;
+	private String dealTime;
 	
 	@Column(name="amount")
-	private Double amount;
+	private String amount;
 	
 	@Column(name="file_name")
 	private String fileName;
@@ -68,19 +66,19 @@ public class InvalidDeals {
 		this.toCurrency = toCurrency;
 	}
 
-	public Date getDealTime() {
+	public String getDealTime() {
 		return dealTime;
 	}
 
-	public void setDealTime(Date dealTime) {
+	public void setDealTime(String dealTime) {
 		this.dealTime = dealTime;
 	}
 
-	public Double getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
 

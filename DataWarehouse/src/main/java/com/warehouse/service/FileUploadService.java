@@ -3,6 +3,7 @@ package com.warehouse.service;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,6 +20,9 @@ import com.warehouse.dto.DealDto;
 import com.warehouse.exception.DataWarehouseExcecption;
 import com.warehouse.model.InvalidDeals;
 import com.warehouse.model.ValidDeals;
+import com.warehouse.validation.DealsValidator;
+
+import static com.warehouse.util.Constants.*;
 
 @Service
 public class FileUploadService {
@@ -31,6 +35,8 @@ public class FileUploadService {
 	@Autowired
 	private InvalidDealsService invalidDealsService;
 	
+	@Autowired
+	private DealsValidator dealsValidator;
 	
     @Transactional
     public void uploadFile(MultipartFile file) {
@@ -44,8 +50,7 @@ public class FileUploadService {
             final Long startTime = System.currentTimeMillis();
 
             reader = new InputStreamReader(file.getInputStream());
-
-            final Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
+            Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
 
 //            final Map<CurrencyCode, Long> currencyCountMap = accumulativeDealCountService.findAllDealsCurrencyCountMap();
 
@@ -56,33 +61,31 @@ public class FileUploadService {
             for (CSVRecord record: records) {
 
                 final DealDto dealDto = new DealDto();
-                dealDto.setDealId(record.get(Headers.DEAL_ID.name()));
-                dealDto.setFromCurrency(record.get(Headers.FROM_CURRENCY.name()));
-                dealDto.setToCurrency(record.get(Headers.TO_CURRENCY.name()));
-//                dealDto.setDateTime(record.get(Headers.TIMESTAMP));
-//                dealDto.setAmount(record.get(Headers.AMOUNT));
+                dealDto.setDealId(record.get(DEAL_ID));
+                dealDto.setFromCurrency(record.get(FROM_CURRENCY));
+                dealDto.setToCurrency(record.get(TO_CURRENCY));
+                dealDto.setDateTime(record.get(TIMESTAMP));
+                dealDto.setAmount(record.get(AMOUNT));
 
-//                if (dealsValidator.valid(dealDto)) {
-//
-//                    final ValidDeal validDeal = ValidDeal.valueOf(dealDto);
-//                    validDeal.setFileName(transactionLog.getFileName());
-//
-//                    validDeals.add(validDeal);
-//
+                if (dealsValidator.isValid(dealDto)) {
+
+                    ValidDeals validDeal = populateValidDeal(dealDto);
+                    validDeal.setFileName(file.getOriginalFilename());
+
+                    validDeals.add(validDeal);
+
 //                    incrementCurrencyCount(currencyCountMap, CurrencyCode.valueOf(dealDto.getFromCurrency()));
-//
-//                } else {
-//
-//                    final InvalidDeal invalidDeal = InvalidDeal.valueOf(dealDto);
-//                    invalidDeal.setFileName(transactionLog.getFileName());
-//
-//                    invalidDeals.add(invalidDeal);
-//                }
-//            }
-//
+
+                } else {
+
+                    InvalidDeals invalidDeal = populateInvalidDeal(dealDto);
+                    invalidDeal.setFileName(file.getOriginalFilename());
+
+                    invalidDeals.add(invalidDeal);
+                }
             }
-//            validDealsService.saveValidDeals(validDeals);
-//            invalidDealsService.saveInvalidDeals(invalidDeals);
+            validDealsService.saveValidDeals(validDeals);
+            invalidDealsService.saveInvalidDeals(invalidDeals);
 
             final Long endTime = System.currentTimeMillis();
 
@@ -98,12 +101,29 @@ public class FileUploadService {
         }
     }
     
-    private enum Headers {
-        DEAL_ID,
-        FROM_CURRENCY,
-        TO_CURRENCY,
-        TIMESTAMP,
-        AMOUNT
+    private ValidDeals populateValidDeal(DealDto dealDto) {
+    	
+    	ValidDeals validDeal = new ValidDeals();
+    	
+        validDeal.setDealId(dealDto.getDealId());
+        validDeal.setFromCurrency(dealDto.getFromCurrency());
+        validDeal.setToCurrency(dealDto.getToCurrency());
+        validDeal.setAmount(Double.parseDouble(dealDto.getAmount()));
+        validDeal.setDealTime(LocalDateTime.parse(dealDto.getDateTime(), FORMATTER));
+
+        return  validDeal;
     }
 
+    private InvalidDeals populateInvalidDeal(DealDto dealDto) {
+    	
+    	InvalidDeals invalidDeal = new InvalidDeals();
+    	
+    	invalidDeal.setDealId(dealDto.getDealId());
+    	invalidDeal.setFromCurrency(dealDto.getFromCurrency());
+    	invalidDeal.setToCurrency(dealDto.getToCurrency());
+    	invalidDeal.setAmount(dealDto.getAmount());
+    	invalidDeal.setDealTime(dealDto.getDateTime());
+    	
+    	return  invalidDeal;
+    }
 }

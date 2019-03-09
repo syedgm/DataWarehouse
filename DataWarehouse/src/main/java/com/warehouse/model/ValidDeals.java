@@ -1,6 +1,6 @@
 package com.warehouse.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +28,7 @@ public class ValidDeals {
 	private String toCurrency;
 	
 	@Column(name="deal_time")
-	private Date dealTime;
+	private LocalDateTime dealTime;
 	
 	@Column(name="amount")
 	private Double amount;
@@ -68,11 +68,11 @@ public class ValidDeals {
 		this.toCurrency = toCurrency;
 	}
 
-	public Date getDealTime() {
+	public LocalDateTime getDealTime() {
 		return dealTime;
 	}
 
-	public void setDealTime(Date dealTime) {
+	public void setDealTime(LocalDateTime dealTime) {
 		this.dealTime = dealTime;
 	}
 
