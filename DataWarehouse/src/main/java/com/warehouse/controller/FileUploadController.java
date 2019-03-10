@@ -63,10 +63,4 @@ public class FileUploadController {
         return "uploadStatus";
     }
     
-    private ModelAndView getModelView() {
-        final ModelAndView modelAndView = new ModelAndView("upload");
-        modelAndView.addObject("formValidator", new FormValidator());
-
-        return modelAndView;
-    }
 }

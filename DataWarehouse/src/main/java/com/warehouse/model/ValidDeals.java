@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class ValidDeals {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false)
 	private Long  id;
 	
