@@ -12,6 +12,10 @@ public class SummaryReportService {
 	@Autowired
 	private SummaryReportRepository reportRepository;
 	
+	public void saveSummary(SummaryReport report) {
+		reportRepository.save(report);
+	}
+	
 	public SummaryReport getSummaryByFileName(String fileName) {
 		return reportRepository.findByFileName(fileName);
 	}

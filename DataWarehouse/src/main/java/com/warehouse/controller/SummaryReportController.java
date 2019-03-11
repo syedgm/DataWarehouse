@@ -33,7 +33,7 @@ public class SummaryReportController {
 
         LOGGER.info("Summary Report by file name: {}", fileName);
 
-        final SummaryReport summary = reportService.getSummaryByFileName(fileName);
+        SummaryReport summary = reportService.getSummaryByFileName(fileName);
 
         if (Objects.isNull(summary)) {
             return ResponseEntity.badRequest().body("No Records Found.");

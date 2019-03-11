@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.warehouse.repository.SummaryReportRepository;
+import com.warehouse.service.SummaryReportService;
 import com.warehouse.validation.constraints.FileProcessed;
 
 public class FileAlreadyProcessed implements ConstraintValidator<FileProcessed, MultipartFile> {
 
 	@Autowired
-	private SummaryReportRepository summaryReportRepository;
+	private SummaryReportService reportService;
 	
 	@Override
 	public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
@@ -22,7 +22,6 @@ public class FileAlreadyProcessed implements ConstraintValidator<FileProcessed, 
 			return Boolean.TRUE;
 		}
 		
-		return ObjectUtils.isEmpty(summaryReportRepository.findByFileName(file.getOriginalFilename()));
+		return ObjectUtils.isEmpty(reportService.getSummaryByFileName(file.getOriginalFilename()));
 	}
-
 }

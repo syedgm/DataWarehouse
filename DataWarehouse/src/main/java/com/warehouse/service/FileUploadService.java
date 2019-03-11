@@ -38,7 +38,7 @@ public class FileUploadService {
 	private InvalidDealsService invalidDealsService;
 	
 	@Autowired
-	private SummaryReportRepository summaryReportRepository;
+	private SummaryReportService reportService;
 	
 	@Autowired
 	private DealsValidator dealsValidator;
@@ -57,11 +57,8 @@ public class FileUploadService {
             reader = new InputStreamReader(file.getInputStream());
             Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
 
-//            final Map<CurrencyCode, Long> currencyCountMap = accumulativeDealCountService.findAllDealsCurrencyCountMap();
-
-            final List<ValidDeals> validDeals = new LinkedList<>();
-            final List<InvalidDeals> invalidDeals = new LinkedList<>();
-
+            List<ValidDeals> validDeals = new LinkedList<>();
+            List<InvalidDeals> invalidDeals = new LinkedList<>();
 
             for (CSVRecord record: records) {
 
@@ -73,16 +70,11 @@ public class FileUploadService {
                 dealDto.setAmount(record.get(AMOUNT));
 
                 if (dealsValidator.isValid(dealDto)) {
-
                     ValidDeals validDeal = populateValidDeal(dealDto);
                     validDeal.setFileName(file.getOriginalFilename());
 
                     validDeals.add(validDeal);
-
-//                    incrementCurrencyCount(currencyCountMap, CurrencyCode.valueOf(dealDto.getFromCurrency()));
-
                 } else {
-
                     InvalidDeals invalidDeal = populateInvalidDeal(dealDto);
                     invalidDeal.setFileName(file.getOriginalFilename());
 
@@ -104,7 +96,7 @@ public class FileUploadService {
             report.setNbrOfInvalidDeals(invalidDeals.size());
             report.setProcessDuration(processDuration);
             
-            summaryReportRepository.save(report);
+            reportService.saveSummary(report);
 
             LOGGER.info("Deals Imported Summary: Number of Valid Deals - {}, Number of Invalid Deals - {}, Elapsed Time - {}s", validDeals.size(), invalidDeals.size(), processDuration);
         } catch (Exception e) {
