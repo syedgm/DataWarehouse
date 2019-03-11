@@ -24,6 +24,11 @@ public class SummaryReportController {
 	@Autowired
 	private SummaryReportService reportService;
 	
+    @GetMapping
+    public String getSummary() {
+        return "summary";
+    }
+
     @GetMapping(value = "/report", produces = "application/json")
     public ResponseEntity summaryReport(@RequestParam("fileName") String fileName) {
 

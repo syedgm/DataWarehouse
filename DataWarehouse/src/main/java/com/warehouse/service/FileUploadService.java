@@ -1,5 +1,12 @@
 package com.warehouse.service;
 
+import static com.warehouse.util.Constants.AMOUNT;
+import static com.warehouse.util.Constants.DEAL_ID;
+import static com.warehouse.util.Constants.FORMATTER;
+import static com.warehouse.util.Constants.FROM_CURRENCY;
+import static com.warehouse.util.Constants.TIMESTAMP;
+import static com.warehouse.util.Constants.TO_CURRENCY;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -21,10 +28,7 @@ import com.warehouse.exception.DataWarehouseExcecption;
 import com.warehouse.model.InvalidDeals;
 import com.warehouse.model.SummaryReport;
 import com.warehouse.model.ValidDeals;
-import com.warehouse.repository.SummaryReportRepository;
 import com.warehouse.validation.DealsValidator;
-
-import static com.warehouse.util.Constants.*;
 
 @Service
 public class FileUploadService {
