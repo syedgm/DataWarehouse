@@ -15,7 +15,12 @@ public class ValidDealsService {
 	private ValidDealsRepository dealsRepository;
 	
 	public void saveValidDeals(List<ValidDeals> validDeals) {
+//		dealsRepository.saveAll(validDeals);
 		dealsRepository.batchSave(validDeals);
+	}
+	
+	public ValidDeals getValidDealByDealId(String dealId) {
+		return dealsRepository.findByDealId(dealId);
 	}
 
 }

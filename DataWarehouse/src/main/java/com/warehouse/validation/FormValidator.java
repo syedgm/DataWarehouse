@@ -7,10 +7,9 @@ import com.warehouse.validation.constraints.FileEmpty;
 import com.warehouse.validation.constraints.FileProcessed;
 
 public class FormValidator {
-
 	@FileEmpty
-    @CsvFormat
-    @FileProcessed
+	@CsvFormat
+	@FileProcessed
     private MultipartFile file;
 
 	public MultipartFile getFile() {

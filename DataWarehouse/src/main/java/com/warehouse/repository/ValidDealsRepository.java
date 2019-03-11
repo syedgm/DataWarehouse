@@ -11,4 +11,6 @@ import com.warehouse.repository.custom.ValidDealRepositoryCustom;
 public interface ValidDealsRepository extends JpaRepository<ValidDeals, Long>, ValidDealRepositoryCustom {
 
 	ValidDeals findByDealId(@Param("dealId") String dealId);
+	
+	
 }

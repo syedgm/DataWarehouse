@@ -18,7 +18,7 @@ public class ValidDeals {
 	@Column(name = "ID", unique = true, nullable = false)
 	private Long  id;
 	
-	@Column(name="deal_id")
+	@Column(name="deal_id", unique=true)
 	private String dealId;
 	
 	@Column(name="from_currency")

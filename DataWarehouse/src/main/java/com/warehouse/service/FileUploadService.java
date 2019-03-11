@@ -19,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.warehouse.dto.DealDto;
 import com.warehouse.exception.DataWarehouseExcecption;
 import com.warehouse.model.InvalidDeals;
+import com.warehouse.model.SummaryReport;
 import com.warehouse.model.ValidDeals;
+import com.warehouse.repository.SummaryReportRepository;
 import com.warehouse.validation.DealsValidator;
 
 import static com.warehouse.util.Constants.*;
@@ -34,6 +36,9 @@ public class FileUploadService {
 	
 	@Autowired
 	private InvalidDealsService invalidDealsService;
+	
+	@Autowired
+	private SummaryReportRepository summaryReportRepository;
 	
 	@Autowired
 	private DealsValidator dealsValidator;
@@ -84,12 +89,24 @@ public class FileUploadService {
                     invalidDeals.add(invalidDeal);
                 }
             }
+            
             validDealsService.saveValidDeals(validDeals);
             invalidDealsService.saveInvalidDeals(invalidDeals);
 
             final Long endTime = System.currentTimeMillis();
+            
+            double processDuration = (endTime - startTime) / 1000;
+            
+            SummaryReport report = new SummaryReport();
+            
+            report.setFileName(file.getOriginalFilename());
+            report.setNbrOfValidDeals(validDeals.size());
+            report.setNbrOfInvalidDeals(invalidDeals.size());
+            report.setProcessDuration(processDuration);
+            
+            summaryReportRepository.save(report);
 
-            LOGGER.info("Deals Imported Summary: Number of Valid Deals - {}, Number of Invalid Deals - {}, Elapsed Time - {}s", validDeals.size(), invalidDeals.size(), (endTime - startTime));
+            LOGGER.info("Deals Imported Summary: Number of Valid Deals - {}, Number of Invalid Deals - {}, Elapsed Time - {}s", validDeals.size(), invalidDeals.size(), processDuration);
         } catch (Exception e) {
             throw new DataWarehouseExcecption(String.format("Error importing deals: "+e.getMessage()));
         } finally {

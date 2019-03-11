@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,18 +28,13 @@ public class FileUploadController {
 	private FileUploadService fileUploadService;
 
 	@GetMapping("/file")
-    public String index(Model model) {
-		model.addAttribute("formValidator", new FormValidator());
-		return "upload";
-    }
+    public ModelAndView index() {
 		
-    @RequestMapping("/home")
-    public String welcome(Model model) {
-        return "home";
+		return getModelView();
     }
     
     @PostMapping("/upload")
-    public ModelAndView singleFileUpload(@ModelAttribute("formValidator") @Valid FormValidator form, BindingResult bindingResult, Model model) {
+    public ModelAndView processFileUpload(@ModelAttribute("formValidator") @Valid FormValidator form, BindingResult bindingResult, Model model) {
 
     	if (bindingResult.hasErrors()) {
             return new ModelAndView("upload");
@@ -46,21 +42,29 @@ public class FileUploadController {
 
         final MultipartFile file = form.getFile();
 
-//        final TransactionLog transactionLog = transactionLogService.save(new TransactionLog(file.getOriginalFilename()));
-//        MDC.put("logId", transactionLog.getId().toString());
-//
         fileUploadService.uploadFile(file);
 
-//        final ModelAndView modelAndView = getModelView();
-//        modelAndView.addObject("success", true);
+        final ModelAndView modelAndView = getModelView();
+        modelAndView.addObject("success", true);
 
-//        return modelAndView;
-        return new ModelAndView("uploadStatus");
+        return modelAndView;
     }
     
-    @GetMapping("/uploadStatus")
-    public String uploadStatus() {
-        return "uploadStatus";
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleException(Exception e) {
+        LOGGER.error("Failed importing file.", e);
+
+        ModelAndView modelAndView = getModelView();
+        modelAndView.addObject("error", true);
+
+        return modelAndView;
     }
     
+    private ModelAndView getModelView() {
+        ModelAndView modelAndView = new ModelAndView("upload");
+        modelAndView.addObject("formValidator", new FormValidator());
+
+        return modelAndView;
+    }
+
 }

@@ -25,14 +25,14 @@ public class ValidDealRepositoryCustomImpl implements ValidDealRepositoryCustom 
 
 	@Override
 	public void batchSave(List<ValidDeals> validDeals) {
-        final List<List<ValidDeals>> batch = Lists.partition(validDeals, 1000);
+        final List<List<ValidDeals>> batch = Lists.partition(validDeals, 1500);
 
         batch.forEach(b -> {
             Session session = entityManager.unwrap(Session.class);
             session.doWork(connection -> {
                 PreparedStatement preparedStatement = null;
                 try {
-                    preparedStatement = connection.prepareStatement(createInsertQuery(b));
+                    preparedStatement = connection.prepareStatement(insertQuery(b));
                     preparedStatement.executeLargeUpdate();
                 } catch (SQLException e) {
                     LOGGER.error("Error occurred on PreparedStatement.", e);
@@ -45,7 +45,7 @@ public class ValidDealRepositoryCustomImpl implements ValidDealRepositoryCustom 
         });
     }
 
-    private String createInsertQuery(List<ValidDeals> validDeals) {
+    private String insertQuery(List<ValidDeals> validDeals) {
         final StringBuilder stringBuilder = new StringBuilder(100000);
         stringBuilder.append("INSERT INTO valid_deals (deal_id, from_currency, to_currency, deal_time, amount, file_name) VALUES ");
 
