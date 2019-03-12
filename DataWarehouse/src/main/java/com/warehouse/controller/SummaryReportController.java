@@ -29,7 +29,7 @@ public class SummaryReportController {
         return "summary";
     }
 
-    @GetMapping(value = "/report", produces = "application/json")
+    @GetMapping(value = "/report", consumes = "application/json", produces = "application/json")
     public ResponseEntity summaryReport(@RequestParam("fileName") String fileName) {
 
         if (StringUtils.isBlank(fileName)) {

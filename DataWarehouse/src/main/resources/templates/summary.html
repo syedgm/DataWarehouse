@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link th:href="@{webjars/bootstrap/3.3.5/css/bootstrap.min.css}" rel="stylesheet" media="screen"/>
+    <script th:src="@{webjars/jquery/1.11.1/jquery.min.js}" type="application/javascript"></script>
+    <script type="text/javascript" src="summary.js"></script>
     <title>Deals Summary</title>
 </head>
 <body>
@@ -23,5 +26,8 @@
     </div>
     <br/>
     <div id="summary" class="container"></div>
+    
+    <br/>
+    
 </body>
 </html>

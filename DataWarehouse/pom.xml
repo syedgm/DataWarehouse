@@ -42,7 +42,12 @@
 		    <version>1.5</version>
 		</dependency>
         
-		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+	    <dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.3.5</version>
+		</dependency>
+
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
