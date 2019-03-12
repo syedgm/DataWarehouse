@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.warehouse.dto.DealDto;
+import com.warehouse.util.Constants;
+
 import static com.warehouse.util.Constants.FORMATTER;
 
 @Component
@@ -17,12 +19,20 @@ public class DealsValidator {
             return false;
         }
 
-        if (StringUtils.isEmpty(dealDto.getToCurrency())) {
-            return false;
-        }
-
         if (StringUtils.isEmpty(dealDto.getFromCurrency())) {
             return false;
+        } else {
+            if (!Constants.currencies.contains(dealDto.getFromCurrency())) {
+                return false;
+            }
+        }
+
+        if (StringUtils.isEmpty(dealDto.getToCurrency())) {
+            return false;
+        } else {
+            if (!Constants.currencies.contains(dealDto.getToCurrency())) {
+                return false;
+            }
         }
 
         if (StringUtils.isEmpty(dealDto.getDateTime())) {

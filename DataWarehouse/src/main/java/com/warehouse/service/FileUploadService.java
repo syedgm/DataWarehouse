@@ -2,10 +2,7 @@ package com.warehouse.service;
 
 import static com.warehouse.util.Constants.AMOUNT;
 import static com.warehouse.util.Constants.DEAL_ID;
-import static com.warehouse.util.Constants.FORMATTER;
-import static com.warehouse.util.Constants.FROM_CURRENCY;
-import static com.warehouse.util.Constants.TIMESTAMP;
-import static com.warehouse.util.Constants.TO_CURRENCY;
+import static com.warehouse.util.Constants.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,7 +44,10 @@ public class FileUploadService {
 	@Autowired
 	private DealsValidator dealsValidator;
 	
-    @Transactional
+	@Autowired
+	private AccumlativeDealService accumlativeDealService;
+	
+	@Transactional
     public void uploadFile(MultipartFile file) {
 
         LOGGER.info("Upload File, File Name: {}", file.getOriginalFilename());
@@ -60,7 +60,7 @@ public class FileUploadService {
 
             reader = new InputStreamReader(file.getInputStream());
             Iterable<CSVRecord> records = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(reader);
-
+            
             List<ValidDeals> validDeals = new LinkedList<>();
             List<InvalidDeals> invalidDeals = new LinkedList<>();
 
@@ -88,7 +88,8 @@ public class FileUploadService {
             
             validDealsService.saveValidDeals(validDeals);
             invalidDealsService.saveInvalidDeals(invalidDeals);
-
+            accumlativeDealService.updateDealsCurrencyCount(validDeals);
+            
             final Long endTime = System.currentTimeMillis();
             
             double processDuration = (endTime - startTime) / 1000;
@@ -114,7 +115,7 @@ public class FileUploadService {
         }
     }
     
-    private ValidDeals populateValidDeal(DealDto dealDto) {
+	private ValidDeals populateValidDeal(DealDto dealDto) {
     	
     	ValidDeals validDeal = new ValidDeals();
     	
