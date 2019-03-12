@@ -16,8 +16,7 @@ public class CsvValidator implements ConstraintValidator<CsvFormat, MultipartFil
             return true;
         }
 
-//        return file.getContentType().equals("text/csv");
-        return true;
+        return file.getContentType().equalsIgnoreCase("application/vnd.ms-excel");
 	}
 
 }
