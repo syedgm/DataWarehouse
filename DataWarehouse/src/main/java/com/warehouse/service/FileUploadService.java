@@ -88,7 +88,6 @@ public class FileUploadService {
             
             validDealsService.saveValidDeals(validDeals);
             invalidDealsService.saveInvalidDeals(invalidDeals);
-            accumlativeDealService.updateDealsCurrencyCount(validDeals);
             
             final Long endTime = System.currentTimeMillis();
             
@@ -100,7 +99,8 @@ public class FileUploadService {
             report.setNbrOfValidDeals(validDeals.size());
             report.setNbrOfInvalidDeals(invalidDeals.size());
             report.setProcessDuration(processDuration);
-            
+
+            accumlativeDealService.updateDealsCurrencyCount(validDeals);
             reportService.saveSummary(report);
 
             LOGGER.info("Deals Imported Summary: Number of Valid Deals - {}, Number of Invalid Deals - {}, Elapsed Time - {}s", validDeals.size(), invalidDeals.size(), processDuration);
