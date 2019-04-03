@@ -5,9 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * Created by tristandiaz on 10/29/17.
- */
 @Entity
 @Table(name = "accumulative_deal_count")
 public class AccumulativeDealCount {
